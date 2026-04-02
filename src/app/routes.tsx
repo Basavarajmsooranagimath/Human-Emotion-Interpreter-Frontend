@@ -6,6 +6,7 @@ import { Dashboard } from "./components/Dashboard";
 import { HistoryPage } from "./components/HistoryPage";
 import { InsightsPage } from "./components/InsightsPage";
 import { SettingsPage } from "./components/SettingsPage";
+import { RequireAuth } from "./components/RequireAuth";
 
 export const router = createBrowserRouter([
   {
@@ -13,17 +14,22 @@ export const router = createBrowserRouter([
     Component: LoginPage,
   },
   {
-    path: "/welcome",
-    Component: WelcomePage,
-  },
-  {
-    path: "/app",
-    Component: Layout,
+    element: <RequireAuth />,
     children: [
-      { index: true, Component: Dashboard },
-      { path: "history", Component: HistoryPage },
-      { path: "insights", Component: InsightsPage },
-      { path: "settings", Component: SettingsPage },
+      {
+        path: "welcome",
+        Component: WelcomePage,
+      },
+      {
+        path: "app",
+        Component: Layout,
+        children: [
+          { index: true, Component: Dashboard },
+          { path: "history", Component: HistoryPage },
+          { path: "insights", Component: InsightsPage },
+          { path: "settings", Component: SettingsPage },
+        ],
+      },
     ],
   },
 ]);

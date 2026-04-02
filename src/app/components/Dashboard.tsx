@@ -10,74 +10,8 @@ interface EmotionResult {
   message: string;
   color: string;
   sentiment: string;
-  responseTimeMs: number;
+  response_time_ms: number;
 }
-
-const emotionResponses: Record<string, EmotionResult> = {
-  happy: {
-    emotion: 'Joyful',
-    emoji: '😊',
-    confidence: 92,
-    message: "You seem joyful and content",
-    color: 'from-yellow-400 to-orange-400',
-    sentiment: 'Positive 😊',
-    responseTimeMs: 0,
-  },
-  sad: {
-    emotion: 'Melancholic',
-    emoji: '😢',
-    confidence: 88,
-    message: "You seem to be feeling a bit down",
-    color: 'from-blue-400 to-indigo-400',
-    sentiment: 'Negative 😔',
-    responseTimeMs: 0,
-  },
-  anxious: {
-    emotion: 'Anxious',
-    emoji: '😰',
-    confidence: 85,
-    message: "You seem worried or anxious",
-    color: 'from-purple-400 to-pink-400',
-    sentiment: 'Negative 😔',
-    responseTimeMs: 0,
-  },
-  excited: {
-    emotion: 'Excited',
-    emoji: '🤩',
-    confidence: 94,
-    message: "You seem excited and energized",
-    color: 'from-pink-400 to-rose-400',
-    sentiment: 'Positive 😊',
-    responseTimeMs: 0,
-  },
-  calm: {
-    emotion: 'Peaceful',
-    emoji: '😌',
-    confidence: 90,
-    message: "You seem calm and at peace",
-    color: 'from-green-400 to-teal-400',
-    sentiment: 'Neutral 😐',
-    responseTimeMs: 0,
-  },
-  angry: {
-    emotion: 'Frustrated',
-    emoji: '😤',
-    confidence: 87,
-    message: "You seem frustrated or upset",
-    color: 'from-red-400 to-orange-400',
-    sentiment: 'Negative 😔',
-    responseTimeMs: 0,
-  },
-  hopeful: {
-    emotion: 'Hopeful',
-    emoji: '🌟',
-    confidence: 91,
-    message: "You seem hopeful and optimistic",
-    color: 'from-cyan-400 to-blue-400',
-    sentiment: 'Positive 😊',
-    responseTimeMs: 0,
-  },
-};
 
 export function Dashboard() {
   const [text, setText] = useState('');
@@ -85,35 +19,42 @@ export function Dashboard() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
 
-  const mapSentimentToResult = (sentiment: string, confidence: number, responseTimeMs: number): EmotionResult => {
+  const mapSentimentToResult = (
+    sentiment: string,
+    confidence: number,
+    response_time_ms: number
+  ): EmotionResult => {
     const normalized = sentiment.toLowerCase();
     if (normalized.includes('positive')) {
       return {
-        ...emotionResponses.happy,
         emotion: 'Positive',
         message: 'You seem to be feeling positive',
+        emoji: '😊',
+        color: 'from-yellow-400 to-orange-400',
         confidence,
         sentiment,
-        responseTimeMs,
+        response_time_ms,
       };
     }
     if (normalized.includes('negative')) {
       return {
-        ...emotionResponses.sad,
         emotion: 'Negative',
         message: 'You may be experiencing difficult emotions',
+        emoji: '😡',
+        color: 'from-red-400 to-orange-400',
         confidence,
         sentiment,
-        responseTimeMs,
+        response_time_ms,
       };
     }
     return {
-      ...emotionResponses.calm,
       emotion: 'Neutral',
       message: 'Your emotional tone appears balanced',
+      emoji: '😐',
+      color: 'from-green-400 to-teal-400',
       confidence,
       sentiment,
-      responseTimeMs,
+      response_time_ms,
     };
   };
 
@@ -129,6 +70,10 @@ export function Dashboard() {
 
     try {
       const data = await predictSentiment(text.trim());
+      if (data?.status === 'failed' || data?.error) {
+        setError('Network issue detected. Please check your internet connection and try again.');
+        return;
+      }
       const detectedEmotion = mapSentimentToResult(
         data.sentiment ?? 'Neutral 😐',
         Number(data.confidence ?? 0),
@@ -145,11 +90,7 @@ export function Dashboard() {
 
       setResult(detectedEmotion);
     } catch (err) {
-      if (err instanceof Error && err.message.includes('Failed to fetch')) {
-        setError('Network issue detected. Please check your internet connection and try again.');
-      } else {
-        setError('Unable to analyze sentiment right now. Please try again in a moment.');
-      }
+      setError('Unable to analyze sentiment right now. Please try again in a moment.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -275,9 +216,7 @@ export function Dashboard() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Response Time</span>
-                    <span className="text-gray-800 dark:text-white">
-                      {result.responseTimeMs.toFixed(1)} ms
-                    </span>
+                    <span className="text-gray-800 dark:text-white">{result.response_time_ms.toFixed(1)} ms</span>
                   </div>
                   <div className="relative h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                     <motion.div

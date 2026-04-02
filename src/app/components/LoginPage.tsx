@@ -1,15 +1,23 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LogIn } from 'lucide-react';
+import { useState } from 'react';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
-  const handleGoogleSignIn = () => {
-    // Mock authentication - in real app, integrate with Google OAuth
-    setTimeout(() => {
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log(result.user);
       navigate('/welcome');
-    }, 500);
+    } catch (error) {
+      console.error(error);
+      setError('Google login failed');
+    }
   };
 
   return (
@@ -64,7 +72,7 @@ export function LoginPage() {
             transition={{ delay: 0.4 }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleLogin}
             className="w-full py-4 px-6 rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 border border-gray-200 dark:border-gray-700"
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24">
@@ -87,6 +95,9 @@ export function LoginPage() {
             </svg>
             <span className="text-gray-700 dark:text-gray-200">Continue with Google</span>
           </motion.button>
+          {error && (
+            <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">{error}</p>
+          )}
 
           <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
             A safe space for emotional reflection

@@ -1,15 +1,23 @@
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export const predictSentiment = async (text) => {
-  const response = await fetch("https://web-production-16406.up.railway.app/predict", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text }),
-  });
+  try {
+    const response = await fetch(
+      `${BASE_URL}/predict`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text })
+      }
+    );
 
-  if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    return {
+      error: "Network error",
+      status: "failed"
+    };
   }
-
-  return response.json();
 };
