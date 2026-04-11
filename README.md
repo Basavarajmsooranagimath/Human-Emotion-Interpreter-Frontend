@@ -1,4 +1,4 @@
-# 🚀 SentimentScope — Real-Time Sentiment Analysis System
+# 🚀 Sentiment Scope — Real-Time Sentiment Analysis Prediction System
 > **AI-powered sentiment detection** — *Understand emotions behind text instantly.*
 
 ---
@@ -82,7 +82,11 @@ The goal is not just prediction — but **interpretable insights**.
   # Human Emotion Interpreter 
    ## Running the code
 
-  Run `npm i` to install the dependencies.
+   
+ Run `npm i` to install the dependencies.
 
-  Run `npm run dev` to start the development server.
-  
+ Run `npm run dev` to start the development server.
+
+## 👨‍💻 Author
+ 
+<p align="center"> <b> Built 🚀 by Basavaraj Sooranagimath✨</b><br/> <i>Aspiring Data Analyst | Computer Science Engineering Undergraduate | Passionate About Coding & Problem-Solving | Exploring World Of Technology</i> </p>
